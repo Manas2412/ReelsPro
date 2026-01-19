@@ -6,6 +6,15 @@ if (!MONGO_URI) {
     throw new Error("Please provide MONGODB_URI in the env file");
 }
 
+/* eslint-disable no-var */
+declare global {
+    var mongoose: {
+        conn: mongoose.Connection | null;
+        promise: Promise<mongoose.Connection> | null;
+    };
+}
+/* eslint-enable no-var */
+
 let cached = global.mongoose;
 
 if (!cached) {
@@ -19,7 +28,7 @@ export async function connectToDatabase() {
 
     if (!cached.promise) {
         const opts = {
-            buffeCommands: true,
+            bufferCommands: true,
             maxPoolSize: 10,
         }
         cached.promise = mongoose
@@ -27,10 +36,11 @@ export async function connectToDatabase() {
             .then(() => mongoose.connection);
     }
 
-    try{
+    try {
         cached.conn = await cached.promise;
-    }catch(err){
-        cached.promise = null;  
+    } catch (err) {
+        cached.promise = null;
+        console.error("MongoDB connection error:", err);
         throw new Error("MongoDb Connection Error");
     }
 
