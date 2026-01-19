@@ -30,7 +30,7 @@ export async function connectToDatabase() {
     try{
         cached.conn = await cached.promise;
     }catch(err){
-        cached.promise = null;
+        cached.promise = null;  
         throw new Error("MongoDb Connection Error");
     }
 
