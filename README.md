@@ -81,6 +81,15 @@ docker run -p 3000:3000 --env-file .env reels-pro
 **3. Access the app:**
 Visit [http://localhost:3000](http://localhost:3000).
 
+#### 🛠️ Using Docker Compose (Recommended)
+
+To simplify the process, you can use Docker Compose which automatically handles the build and environment variables:
+
+```bash
+docker compose up --build
+```
+
+
 ## 📁 Project Structure
 
 - `app/`: Next.js App Router pages and API routes.

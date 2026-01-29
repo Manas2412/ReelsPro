@@ -65,6 +65,13 @@ The project includes a `Dockerfile` optimized for Next.js 15.
 - **Dynamic Build**: API routes are marked as `force-dynamic` to bypass database connection requirements during the build phase.
 - **Dockerignore**: Excludes large directories like `.next` and `node_modules` from the build context.
 
+### 🛠️ Docker Compose Configuration
+The `docker-compose.yml` is configured to:
+- Build the `reels_pro` service using the local Dockerfile.
+- Map port `3000` to the host.
+- Load environment variables directly from the `.env` file using the `env_file` property, ensuring that your local secrets aren't hardcoded into the YAML file.
+
+
 ### Environment Requirements:
 Docker's `--env-file` flag is strict. Ensure your `.env` file does **not** contain:
 - Quotes around values (e.g., use `SECRET=abc` not `SECRET="abc"`)
