@@ -1,5 +1,6 @@
 services:
   reels_pro:
+    container_name: reels_pro
     build:
       context: .
       dockerfile: Dockerfile

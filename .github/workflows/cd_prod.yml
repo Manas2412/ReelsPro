@@ -28,6 +28,11 @@ jobs:
             # Then build and restart with Docker Compose
             docker compose down
             docker compose up --build -d
+
+            # Wait for container to initialize and verify PM2 status
+            echo "Waiting for container to start..."
+            sleep 10
+            docker exec reels_pro pm2 list
             
             # Optional cleanup of dangling images to save space
             docker image prune -f

@@ -6,11 +6,13 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps
 
+RUN npm install -g pm2
+
 COPY . .
 
 RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]
 
