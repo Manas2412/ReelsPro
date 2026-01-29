@@ -54,3 +54,20 @@ Reels Pro is built as a full-stack Next.js application using the App Router. It 
 - **Peer Dependencies**: Use `--legacy-peer-deps` when installing, as some packages have strict React version requirements that conflict with React 19.
 - **ImageKit Folders**: Uploads are organized into `/videos` and `/images` folders within your ImageKit dashboard.
 - **Styling Tokens**: Custom themes are managed in `tailwind.config.ts` using DaisyUI.
+
+## 🐳 Docker Architecture
+
+The project includes a `Dockerfile` optimized for Next.js 15.
+
+### Key Optimizations:
+- **Base Image**: Uses `node:22-alpine` for a minimal footprint.
+- **Legacy Dependencies**: Built with `--legacy-peer-deps` to handle strict package requirements.
+- **Dynamic Build**: API routes are marked as `force-dynamic` to bypass database connection requirements during the build phase.
+- **Dockerignore**: Excludes large directories like `.next` and `node_modules` from the build context.
+
+### Environment Requirements:
+Docker's `--env-file` flag is strict. Ensure your `.env` file does **not** contain:
+- Quotes around values (e.g., use `SECRET=abc` not `SECRET="abc"`)
+- Whitespace before or after the `=` sign
+- Trailing spaces at the end of lines
+

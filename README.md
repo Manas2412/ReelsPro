@@ -63,6 +63,24 @@ NEXT_PUBLIC_URL_ENDPOINT=your_url_endpoint
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### 🐳 Docker Usage
+
+Alternatively, you can run the application using Docker for a consistent environment.
+
+**1. Build the Docker image:**
+```bash
+docker build -t reels-pro .
+```
+
+**2. Run the container:**
+Ensure your `.env` file is properly formatted (no quotes around values, no trailing spaces).
+```bash
+docker run -p 3000:3000 --env-file .env reels-pro
+```
+
+**3. Access the app:**
+Visit [http://localhost:3000](http://localhost:3000).
+
 ## 📁 Project Structure
 
 - `app/`: Next.js App Router pages and API routes.

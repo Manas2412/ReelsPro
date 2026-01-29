@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const MONGO_URI = process.env.MONGODB_URI!;
 
-if (!MONGO_URI) {
-    throw new Error("Please provide MONGODB_URI in the env file");
-}
-
 /* eslint-disable no-var */
 declare global {
     var mongoose: {
@@ -24,6 +20,10 @@ if (!cached) {
 export async function connectToDatabase() {
     if (cached.conn) {
         return cached.conn
+    }
+
+    if (!MONGO_URI) {
+        throw new Error("Please provide MONGODB_URI in the env file");
     }
 
     if (!cached.promise) {
