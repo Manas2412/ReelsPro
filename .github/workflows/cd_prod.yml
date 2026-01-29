@@ -1,0 +1,33 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy to Production Server
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }} # Optional
+          script: |
+            cd ~/reels-pro
+            git pull origin main
+            
+            # Use the .env file on the server or ensure secrets are set
+            # Then build and restart with Docker Compose
+            docker compose down
+            docker compose up --build -d
+            
+            # Optional cleanup of dangling images to save space
+            docker image prune -f

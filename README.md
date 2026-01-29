@@ -89,6 +89,19 @@ To simplify the process, you can use Docker Compose which automatically handles 
 docker compose up --build
 ```
 
+### 🚀 Automated Deployment (CI/CD)
+
+The project includes a GitHub Actions workflow for automatic deployment on every push to the `main` branch.
+
+#### Required GitHub Secrets:
+To use the deployment workflow, ensure you have these secrets set in your repository:
+- `PROD_HOST`: Your production server IP or domain.
+- `SSH_PRIVATE_KEY`: Your SSH private key for server access.
+- `SSH_PASSPHRASE` (Optional): Passphrase if your key is encrypted.
+
+The workflow is located at `.github/workflows/cd_prod.yml`.
+
+
 
 ## 📁 Project Structure
 
