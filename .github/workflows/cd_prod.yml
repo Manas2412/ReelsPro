@@ -25,15 +25,22 @@ jobs:
             git pull origin main
             
             # Use the .env file on the server or ensure secrets are set
+            # Check if port 80 is already in use by another process
+            sudo lsof -i :80 || echo "Port 80 is free"
+
             # Then build and restart with Docker Compose
             docker compose down
             docker compose up --build -d
 
             # Wait for containers to initialize and verify status
             echo "Waiting for containers to start..."
-            sleep 10
+            sleep 15
+            
+            echo "Checking PM2 status in reels_pro..."
             docker exec reels_pro pm2 list
-            docker ps | grep nginx
+            
+            echo "Checking Nginx status..."
+            docker ps | grep nginx || (docker logs nginx && exit 1)
             
             # Optional cleanup of dangling images to save space
             docker image prune -f
