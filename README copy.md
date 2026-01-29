@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reels Pro - Developer Documentation 🛠️
 
-## Getting Started
+This file contains technical details about the Reels Pro architecture, data models, and API endpoints.
 
-First, run the development server:
+## 🏗️ Architecture
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Reels Pro is built as a full-stack Next.js application using the App Router. It leverages a serverless architecture where Next.js API routes handle backend logic and database interactions.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Data Models
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### User (`models/User.ts`)
+- `email`: Unique string (Required)
+- `password`: Hashed string (Required)
+- `createdAt`/`updatedAt`: Automated timestamps
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### Video Reel (`models/Video.ts`)
+- `title`: String (Required)
+- `description`: String (Required)
+- `videoUrl`: ImageKit path (Required)
+- `thumbnailUrl`: String (Required)
+- `transformation`: Object (Height, Width, Quality)
+- `controls`: Boolean (Default: true)
 
-## Learn More
+#### Product (`models/Product.ts`)
+- `name`: String (Required)
+- `description`: String (Required)
+- `imageUrl`: ImageKit path (Required)
+- `price`: Number (Required)
 
-To learn more about Next.js, take a look at the following resources:
+## 📡 API Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Authentication
+- `POST /api/auth/register`: Register a new user.
+- `GET /api/auth/session`: Get current session data (NextAuth).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Media & Content
+- `GET /api/videos`: Fetch all video reels.
+- `POST /api/videos`: Upload a new video (Requires Auth).
+- `GET /api/products`: Fetch all product listings.
+- `POST /api/products`: Create a new product (Requires Auth).
 
-## Deploy on Vercel
+### ImageKit
+- `GET /api/imagekit-auth`: Provides authentication parameters for client-side ImageKit uploads.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔧 Core Components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **FileUpload.tsx**: Generic component that handles both Image and Video uploads to ImageKit with validation.
+- **VideoFeed.tsx**: Responsive grid component for displaying video content.
+- **MainPage.tsx**: The landing experience featuring a hero section and curated feed.
+- **apiClient.ts**: A singleton class for making type-safe requests to the backend.
+
+## 🧪 Development Notes
+
+- **Peer Dependencies**: Use `--legacy-peer-deps` when installing, as some packages have strict React version requirements that conflict with React 19.
+- **ImageKit Folders**: Uploads are organized into `/videos` and `/images` folders within your ImageKit dashboard.
+- **Styling Tokens**: Custom themes are managed in `tailwind.config.ts` using DaisyUI.
