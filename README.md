@@ -21,7 +21,16 @@ A premium short-form video sharing platform and product showcase built with Next
 - **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
 - **Auth**: [NextAuth.js](https://next-auth.js.org/)
 - **Media SDK**: [ImageKit.io](https://imagekit.io/)
-- **Icons**: [Lucide React](https://lucide.dev/)
+- **Process Manager**: [PM2](https://pm2.keymetrics.io/) (for production)
+- **Reverse Proxy**: [Nginx](https://www.nginx.com/)
+
+## 🏗️ Production Architecture
+
+Reels Pro is designed for high availability and performance. The production environment uses a multi-container Docker setup:
+
+1.  **Next.js App**: Running on Node.js 22, managed by PM2 for automatic restarts and monitoring.
+2.  **Nginx Proxy**: Acts as a reverse proxy to handle incoming traffic on port 80 and forward it to the application.
+3.  **Docker Compose**: Orchestrates both containers and manages the shared network.
 
 ## 🏁 Getting Started
 
@@ -36,9 +45,14 @@ A premium short-form video sharing platform and product showcase built with Next
 Create a `.env` file in the root directory and add the following:
 
 ```env
+# Database
 MONGODB_URI=your_mongodb_uri
-NEXTAUTH_SECRET=your_auth_secret
 
+# Authentication
+NEXTAUTH_SECRET=your_auth_secret
+NEXTAUTH_URL=http://localhost:3000
+
+# ImageKit (Media Delivery)
 IMAGEKIT_PRIVATE_KEY=your_private_key
 NEXT_PUBLIC_PUBLIC_KEY=your_public_key
 NEXT_PUBLIC_URL_ENDPOINT=your_url_endpoint
@@ -46,62 +60,52 @@ NEXT_PUBLIC_URL_ENDPOINT=your_url_endpoint
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Manas2412/ReelsPro.git
-   ```
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/Manas2412/ReelsPro.git
+    cd ReelsPro
+    ```
 
-2. Install dependencies:
-   ```bash
-   npm install --legacy-peer-deps
-   ```
+2.  **Install dependencies**:
+    ```bash
+    npm install --legacy-peer-deps
+    ```
 
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
+3.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4.  **Access the application**:
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 🐳 Docker Usage
+## 🐳 Docker Usage (Production)
 
-Alternatively, you can run the application using Docker for a consistent environment.
-
-**1. Build the Docker image:**
-```bash
-docker build -t reels-pro .
-```
-
-**2. Run the container:**
-Ensure your `.env` file is properly formatted (no quotes around values, no trailing spaces).
-```bash
-docker run -p 3000:3000 --env-file .env reels-pro
-```
-
-**3. Access the app:**
-Visit [http://localhost:3000](http://localhost:3000).
-
-#### 🛠️ Using Docker Compose (Recommended)
-
-To simplify the process, you can use Docker Compose which automatically handles the build and environment variables:
+For production-ready deployment, use Docker Compose:
 
 ```bash
-docker compose up --build
+# Build and start the containers in detached mode
+docker compose up --build -d
 ```
 
-### 🚀 Automated Deployment (CI/CD)
+This will spin up:
+-   A Next.js container (Reels Pro) listening on port 3000.
+-   An Nginx container listening on port 80.
 
-The project includes a GitHub Actions workflow for automatic deployment on every push to the `main` branch.
+## 🚀 Automated Deployment (CI/CD)
 
-#### Required GitHub Secrets:
-To use the deployment workflow, ensure you have these secrets set in your repository:
-- `PROD_HOST`: Your production server IP or domain.
+The project features a GitHub Actions workflow (`.github/workflows/cd_prod.yml`) for automated deployment.
+
+### Required GitHub Secrets:
+To enable auto-deployment, add the following secrets to your GitHub repository:
+- `PROD_HOST`: Production server IP address or domain.
 - `SSH_PRIVATE_KEY`: Your SSH private key for server access.
-- `SSH_PASSPHRASE` (Optional): Passphrase if your key is encrypted.
+- `SSH_PASSPHRASE`: (Optional) If your private key is encrypted.
 
-The workflow is located at `.github/workflows/cd_prod.yml`.
-
-
+The workflow automatically:
+1. Pulls the latest code from `main`.
+2. Rebuilds and restarts Docker containers.
+3. Verifies container health and PM2 status.
 
 ## 📁 Project Structure
 
@@ -109,8 +113,14 @@ The workflow is located at `.github/workflows/cd_prod.yml`.
 - `components/`: Reusable UI components (VideoFeed, FileUpload, etc.).
 - `lib/`: Utility functions, API client, and database connection.
 - `models/`: Mongoose schemas for Users, Videos, and Products.
-- `public/`: Static assets.
+- `nginx-prod/`: Nginx configuration for production reverse proxy.
+- `public/`: Static assets and icons.
+
+## 📖 Documentation
+
+For more detailed technical information, including API endpoints and data models, please refer to the [Developer Documentation](DEVELOPER.md).
 
 ## 📝 License
 
 This project is licensed under the MIT License.
+

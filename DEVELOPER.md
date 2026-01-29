@@ -55,26 +55,31 @@ Reels Pro is built as a full-stack Next.js application using the App Router. It 
 - **ImageKit Folders**: Uploads are organized into `/videos` and `/images` folders within your ImageKit dashboard.
 - **Styling Tokens**: Custom themes are managed in `tailwind.config.ts` using DaisyUI.
 
-## 🐳 Docker Architecture
+## 🐳 Docker Production Setup
 
-The project includes a `Dockerfile` optimized for Next.js 15.
+The production environment is orchestrated via Docker Compose and includes Nginx as a reverse proxy.
 
-### Key Optimizations:
+### Dockerfile Optimizations:
 - **Base Image**: Uses `node:22-alpine` for a minimal footprint.
-- **Legacy Dependencies**: Built with `--legacy-peer-deps` to handle strict package requirements.
-- **Dynamic Build**: API routes are marked as `force-dynamic` to bypass database connection requirements during the build phase.
-- **Dockerignore**: Excludes large directories like `.next` and `node_modules` from the build context.
+- **Process Management**: Uses `pm2-runtime` to manage the Next.js process, ensuring automatic restarts and logs.
+- **Build Phase**: API routes are marked as `force-dynamic` to bypass database connection requirements during the build.
 
-### 🛠️ Docker Compose Configuration
-The `docker-compose.yml` is configured to:
-- Build the `reels_pro` service using the local Dockerfile.
-- Map port `3000` to the host.
-- Load environment variables directly from the `.env` file using the `env_file` property, ensuring that your local secrets aren't hardcoded into the YAML file.
+### Nginx Configuration (`nginx-prod/nginx-prod.conf`):
+- Listens on port 80.
+- Proxies requests to the `reels_pro` service on port 3000.
+- Handles WebSocket upgrades for Next.js hot reloading and real-time features.
+- Sets standard proxy headers (`Host`, `X-Real-IP`, `X-Forwarded-For`).
 
+### CD Workflow (`.github/workflows/cd_prod.yml`):
+- Triggers on push to `main`.
+- Connects to the production server via SSH.
+- Performs a `git pull`, followed by `docker compose up --build -d`.
+- Performs health checks on the containers and PM2 status.
 
 ### Environment Requirements:
 Docker's `--env-file` flag is strict. Ensure your `.env` file does **not** contain:
 - Quotes around values (e.g., use `SECRET=abc` not `SECRET="abc"`)
 - Whitespace before or after the `=` sign
 - Trailing spaces at the end of lines
+
 
