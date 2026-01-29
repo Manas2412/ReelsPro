@@ -4,7 +4,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
     env_file:
       - .env
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-prod/nginx-prod.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - reels_pro
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
